@@ -19,17 +19,17 @@ def crear_poblacion_inicial(tamano_poblacion, largo_cromosoma):
 def calcular_fitness(individuo):
    pos = np.where(individuo == 1)
    c = list(map(get_cromo_info,pos[0]))
-   print("---costo array----")
-   print(c)
+   #print("---costo array----")
+   #print(c)
    peso_ind = sum([pair[0] for pair in c])
-   print("---peso---")
-   print(peso_ind)
+   #print("---peso---")
+   #print(peso_ind)
    profit = sum([pair[1] for pair in c])
-   print("---profit---")
-   print(profit)
+   #print("---profit---")
+   #print(profit)
    fitness = 0 
    if peso_ind <= capacidad_maxima:
-      print("No se pasa")
+      #print("No se pasa")
       fitness = profit
    return fitness
 
@@ -39,6 +39,48 @@ def get_cromo_info(pos):
    profit = datos_problema[pos][1]
    return peso, profit 
 
+
+def seleccion_por_torneo(poblacion, scores):
+    
+    tam_poblacion = len(scores)
+    
+    cont_1 = random.randint(0, tam_poblacion-1)
+    cont_2 = random.randint(0, tam_poblacion-1)
+    
+    cont_1_fitness = scores[cont_1]
+    cont_2_fitness = scores[cont_2]
+    
+    if cont_1_fitness >= cont_2_fitness:
+       ganador = cont_1
+    else:
+       ganador = cont_2
+
+    return poblacion[ganador, :]
+
+def cruzamiento(padre_1, padre_2):
+    
+    punto_cruce = random.randint(1,largo_cromosoma-1)
+    
+    #Crear un nuevo array con el punto de cruce y a
+    #partir de los padres
+    hijo_1 = np.hstack((padre_1[0:punto_cruce],
+                        padre_2[punto_cruce:]))
+    
+    hijo_2 = np.hstack((padre_1[0:punto_cruce],
+                        padre_2[punto_cruce:]))
+    
+    return hijo_1, hijo_2
+
+
+def mutacion(poblacion, prob_mutacion):
+    
+   
+    ar_mutacion = np.random.random(size=(poblacion.shape)) 
+    es_menor =  ar_mutacion <= prob_mutacion
+    poblacion[es_menor] = np.logical_not(poblacion[es_menor])
+     
+    return poblacion
+
 # --------- MAIN  -------------
 
 
@@ -47,13 +89,46 @@ def get_cromo_info(pos):
 datos_problema = [[25,350],[35,400],[45,450],[5,20],[25,70],[3,8],[2,5],[2,5]]
 largo_cromosoma = 8
 tamano_poblacion = 10
-maximo_generaciones = 100
+maximo_generaciones = 150
 capacidad_maxima = 104
-best_score_progress = [] # Tracks progress
+progreso_alg = []
 
 
 poblacion = crear_poblacion_inicial(tamano_poblacion , largo_cromosoma)
 print(poblacion)
 scores = list(map(calcular_fitness, poblacion))
 print(scores)
+mejor_score = np.max(scores)
+print ('Starting best score, % target: ',mejor_score)
+progreso_alg.append(mejor_score)
 #print(datos_problema)
+
+for generacion in range(maximo_generaciones):
+
+    nueva_pob = []
+    
+    for i in range(int(tamano_poblacion/2)):
+        padre_1 = seleccion_por_torneo(poblacion, scores)
+        padre_2 = seleccion_por_torneo(poblacion, scores)
+        hijo_1, hijo_2 = cruzamiento(padre_1, padre_2)
+        nueva_pob.append(hijo_1)
+        nueva_pob.append(hijo_2)
+    
+
+    poblacion = np.array(nueva_pob)
+    
+    print("Nueva población para generación - ", generacion)
+    print(poblacion)
+    tasa_mutacion = 0.002
+    poblacion = mutacion(poblacion, tasa_mutacion)
+    
+    print("Poblacion mutada para generacion - ", generacion)
+    print(poblacion)
+    scores = list(map(calcular_fitness, poblacion))
+    best_score = np.max(scores)
+    progreso_alg.append(best_score)
+    print("El mejor para esta generacion fue:", best_score)
+
+# GA has completed required generation
+el_mejor = np.max(progreso_alg)
+print ('El mayor profit es: ', el_mejor)
