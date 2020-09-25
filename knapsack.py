@@ -76,7 +76,11 @@ def mutacion(poblacion, prob_mutacion):
     
    
     ar_mutacion = np.random.random(size=(poblacion.shape)) 
+    #print("ar_mutacion")
+    #print(ar_mutacion)
     es_menor =  ar_mutacion <= prob_mutacion
+    #print("es menor")
+    #print(es_menor)
     poblacion[es_menor] = np.logical_not(poblacion[es_menor])
      
     return poblacion
@@ -91,7 +95,7 @@ largo_cromosoma = 8
 tamano_poblacion = 10
 maximo_generaciones = 150
 capacidad_maxima = 104
-progreso_alg = []
+progreso = []
 
 
 poblacion = crear_poblacion_inicial(tamano_poblacion , largo_cromosoma)
@@ -99,12 +103,14 @@ print(poblacion)
 scores = list(map(calcular_fitness, poblacion))
 print(scores)
 mejor_score = np.max(scores)
-print ('Starting best score, % target: ',mejor_score)
-progreso_alg.append(mejor_score)
-#print(datos_problema)
+pos_mejor_score = np.argmax(scores)
+progreso.append((poblacion[pos_mejor_score],mejor_score))
+
+
 
 for generacion in range(maximo_generaciones):
 
+    print("-----GENERACIÓN----", generacion)
     nueva_pob = []
     
     for i in range(int(tamano_poblacion/2)):
@@ -116,19 +122,21 @@ for generacion in range(maximo_generaciones):
     
 
     poblacion = np.array(nueva_pob)
-    
-    print("Nueva población para generación - ", generacion)
-    print(poblacion)
-    tasa_mutacion = 0.002
-    poblacion = mutacion(poblacion, tasa_mutacion)
-    
-    print("Poblacion mutada para generacion - ", generacion)
-    print(poblacion)
-    scores = list(map(calcular_fitness, poblacion))
-    best_score = np.max(scores)
-    progreso_alg.append(best_score)
-    print("El mejor para esta generacion fue:", best_score)
+    #print("Nueva población para generación - ", generacion)
+    #print(poblacion)
 
-# GA has completed required generation
-el_mejor = np.max(progreso_alg)
-print ('El mayor profit es: ', el_mejor)
+    tasa_mutacion = 0.2
+    poblacion = mutacion(poblacion, tasa_mutacion)
+    #print("Poblacion mutada para generacion - ", generacion)
+    #print(poblacion)
+
+    scores = list(map(calcular_fitness, poblacion))
+    mejor_score = np.max(scores)
+    pos_mejor_score = np.argmax(scores)
+    print("El mejor para esta generacion fue: ", poblacion[pos_mejor_score], "con profit: ", mejor_score)
+    progreso.append((poblacion[pos_mejor_score],mejor_score))
+
+mejor_ind  = max(progreso, key = lambda i : i[1])[0] 
+mejor_profit  = max(progreso, key = lambda i : i[1])[1] 
+print ('El mayor profit es: ', mejor_profit)
+print ('Para el individuo: ', mejor_ind)
