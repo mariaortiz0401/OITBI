@@ -1,7 +1,5 @@
 import random
 import numpy as np
-from numpy import asarray
-from functools import reduce
 
 def crear_poblacion_inicial(tamano_poblacion, largo_cromosoma):
     
