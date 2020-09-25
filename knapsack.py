@@ -72,19 +72,30 @@ def cruzamiento(padre_1, padre_2):
     return hijo_1, hijo_2
 
 
-def mutacion(poblacion, prob_mutacion):
+def mutacion_random(poblacion, prob_mutacion):
     
-   
-    ar_mutacion = np.random.random(size=(poblacion.shape)) 
+    #Valor aleatorio de 0.1 a 1
+    ar_mutacion = np.random.random(size=(poblacion.shape)) #8x10
     #print("ar_mutacion")
     #print(ar_mutacion)
+
+    #Se evalúa si el valor aleatorio es menor a parámetro de mutacion
+    #Si lo es, arrojará un TRUE
     es_menor =  ar_mutacion <= prob_mutacion
     #print("es menor")
     #print(es_menor)
+    #Si es TRUE, se cambia el valor.
     poblacion[es_menor] = np.logical_not(poblacion[es_menor])
-     
+
     return poblacion
 
+def mutacion_flip(poblacion):
+    
+    pob = list(map(flip_array,poblacion))
+    return poblacion
+
+def flip_array(pos):
+    return [int(not i) for i in pos]
 # --------- MAIN  -------------
 
 
@@ -93,7 +104,7 @@ def mutacion(poblacion, prob_mutacion):
 datos_problema = [[25,350],[35,400],[45,450],[5,20],[25,70],[3,8],[2,5],[2,5]]
 largo_cromosoma = 8
 tamano_poblacion = 10
-maximo_generaciones = 150
+maximo_generaciones = 200
 capacidad_maxima = 104
 progreso = []
 
@@ -125,8 +136,9 @@ for generacion in range(maximo_generaciones):
     #print("Nueva población para generación - ", generacion)
     #print(poblacion)
 
-    tasa_mutacion = 0.2
-    poblacion = mutacion(poblacion, tasa_mutacion)
+    tasa_mutacion = 0.02
+    poblacion = mutacion_random(poblacion, tasa_mutacion)
+    #poblacion = mutacion_flip(poblacion)
     #print("Poblacion mutada para generacion - ", generacion)
     #print(poblacion)
 
