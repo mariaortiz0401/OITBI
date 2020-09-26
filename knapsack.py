@@ -153,7 +153,8 @@ mejor_profit  = max(progreso, key = lambda i : i[1])[1]
 print ('El mayor profit es: ', mejor_profit)
 print ('Para el individuo: ', mejor_ind)
 
+nombre_archivo = "Comportamiento-"+str(maximo_generaciones)+"-g.png"
 plt.plot(progreso_scores)
 plt.xlabel('Generacion')
 plt.ylabel('Profit')
-plt.savefig('proceso.png')
+plt.savefig(nombre_archivo)
