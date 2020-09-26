@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import matplotlib.pyplot as plt
 
 def crear_poblacion_inicial(tamano_poblacion, largo_cromosoma):
     
@@ -105,7 +106,7 @@ tamano_poblacion = 10
 maximo_generaciones = 200
 capacidad_maxima = 104
 progreso = []
-
+progreso_scores = [];
 
 poblacion = crear_poblacion_inicial(tamano_poblacion , largo_cromosoma)
 print(poblacion)
@@ -114,7 +115,7 @@ print(scores)
 mejor_score = np.max(scores)
 pos_mejor_score = np.argmax(scores)
 progreso.append((poblacion[pos_mejor_score],mejor_score))
-
+progreso_scores.append(mejor_score)
 
 
 for generacion in range(maximo_generaciones):
@@ -145,8 +146,14 @@ for generacion in range(maximo_generaciones):
     pos_mejor_score = np.argmax(scores)
     print("El mejor para esta generacion fue: ", poblacion[pos_mejor_score], "con profit: ", mejor_score)
     progreso.append((poblacion[pos_mejor_score],mejor_score))
+    progreso_scores.append(mejor_score)
 
 mejor_ind  = max(progreso, key = lambda i : i[1])[0] 
 mejor_profit  = max(progreso, key = lambda i : i[1])[1] 
 print ('El mayor profit es: ', mejor_profit)
 print ('Para el individuo: ', mejor_ind)
+
+plt.plot(progreso_scores)
+plt.xlabel('Generacion')
+plt.ylabel('Profit')
+plt.savefig('proceso.png')
