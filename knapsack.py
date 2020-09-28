@@ -73,7 +73,7 @@ def cruzamiento(padre_1, padre_2):
 
 def mutacion_random(poblacion, prob_mutacion):
     
-    #Valor aleatorio de 0.1 a 1
+    #Valor aleatorio de 0 a 1
     ar_mutacion = np.random.random(size=(poblacion.shape)) #8x10
     #print("ar_mutacion")
     #print(ar_mutacion)
