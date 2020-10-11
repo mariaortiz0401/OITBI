@@ -1,12 +1,16 @@
 import random
 import numpy as np
-import matplotlib.pyplot as plt
+from functools import reduce
 
 def buscar_puntos(pos):
-	return input[0][pos],input[1][pos]
+	return [input[0][pos],input[1][pos]]
 
 def imprimir_puntos_frente(pos):
 	return list(map(buscar_puntos, pos))
+
+def calc_area(pos):
+	#print (pos[0], pos[1])
+	return pos[0] * pos[1]
 
 def creacion_frentes(valores_f1, valores_f2):
 	#Conjunto de soluciones que p domina
@@ -67,7 +71,23 @@ def creacion_frentes(valores_f1, valores_f2):
 
 # --------- MAIN  -------------
 
-file = np.loadtxt("input.txt", dtype='str', delimiter=' ')
+#file = np.loadtxt("input.txt", dtype='str', delimiter=' ')
+#input = file.astype(np.float64)
+#print("\n---------Ejemplo Clase---------------\n")
+#print("Soluciones para f1:\n",input[0])
+#print("\nSoluciones para f2:\n",input[1])
+
+#frentes = creacion_frentes(input[0], input[1])
+#print("\n---------FRENTES---------------")
+#print(frentes_e1)
+
+#print("\n---------PUNTOS POR CADA FRENTE---------------")
+#puntos = list(map(imprimir_puntos_frente,frentes_e1))
+#for index, pos in enumerate(puntos):
+	#print("-- Frente ", index )
+	#print("Puntos:\n",pos)
+
+file = np.loadtxt("input1.txt", dtype='str', delimiter=' ')
 input = file.astype(np.float64)
 print("\n---------Ejemplo 1---------------\n")
 print("Soluciones para f1:\n",input[0])
@@ -78,24 +98,37 @@ print("\n---------FRENTES---------------")
 print(frentes_e1)
 
 print("\n---------PUNTOS POR CADA FRENTE---------------")
-puntos = list(map(imprimir_puntos_frente,frentes_e1))
-for index, pos in enumerate(puntos):
+puntos_1 = list(map(imprimir_puntos_frente,frentes_e1))
+for index, pos in enumerate(puntos_1):
 	print("-- Frente ", index )
 	print("Puntos:\n",pos)
 
 
 file = np.loadtxt("input2.txt", dtype='str', delimiter=' ')
 input = file.astype(np.float64)
-print("\n---------Ejemplo 2---------------\n")
+print("\n---------Ejemplo ---------------\n")
 print("Soluciones para f1:\n",input[0])
 print("\nSoluciones para f2:\n",input[1])
 
-frentes_e1 = creacion_frentes(input[0], input[1])
+frentes_e2 = creacion_frentes(input[0], input[1])
 print("\n---------FRENTES---------------")
-print(frentes_e1)
+print(frentes_e2)
 
 print("\n---------PUNTOS POR CADA FRENTE---------------")
-puntos = list(map(imprimir_puntos_frente,frentes_e1))
-for index, pos in enumerate(puntos):
+puntos_2 = list(map(imprimir_puntos_frente,frentes_e2))
+for index, pos in enumerate(puntos_2):
 	print("-- Frente ", index )
 	print("Puntos:\n",pos)
+
+
+print("\n---------HIPERVOLUMEN EJEMPLO 1---------------\n")
+for index, pos in enumerate(puntos_1):
+	mult = list(map(calc_area,pos))
+	hv = reduce((lambda a, b: a + b), mult)
+	print("HV para frente "+str(index)+": "+str(hv))
+
+print("\n---------HIPERVOLUMEN EJEMPLO 2---------------\n")
+for index, pos in enumerate(puntos_2):
+	mult = list(map(calc_area,pos))
+	hv = reduce((lambda a, b: a + b), mult)
+	print("HV para frente "+str(index)+": "+str(hv))
