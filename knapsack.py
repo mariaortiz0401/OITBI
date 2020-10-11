@@ -103,7 +103,7 @@ def flip_array(pos):
 datos_problema = [[25,350],[35,400],[45,450],[5,20],[25,70],[3,8],[2,5],[2,5]]
 largo_cromosoma = 8
 tamano_poblacion = 10
-maximo_generaciones = 200
+maximo_generaciones = 100
 capacidad_maxima = 104
 progreso = []
 progreso_scores = [];
@@ -138,8 +138,8 @@ for generacion in range(maximo_generaciones):
     tasa_mutacion = 0.02
     poblacion = mutacion_random(poblacion, tasa_mutacion)
     #poblacion = mutacion_flip(poblacion)
-    #print("Poblacion mutada para generacion - ", generacion)
-    #print(poblacion)
+    print("Poblacion mutada para generacion - ", generacion)
+    print(poblacion)
 
     scores = list(map(calcular_fitness, poblacion))
     mejor_score = np.max(scores)
@@ -158,3 +158,7 @@ plt.plot(progreso_scores)
 plt.xlabel('Generacion')
 plt.ylabel('Profit')
 plt.savefig(nombre_archivo)
+
+#Penalizar
+#Control de dos padres iguales 
+#Variar gen en una mutación.
