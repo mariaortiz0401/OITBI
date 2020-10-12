@@ -92,8 +92,8 @@ for index, pos in enumerate(puntos_1):
 
 print("\n---------HIPERVOLUMEN EJEMPLO 1---------------\n")
 for index, pos in enumerate(puntos_1):
-		print("Frente: ", str(index))
-	#if index == 0: #Quitar si se quiere hallar para otros frentes
+		#print("Frente: ", str(index))
+	if index == 0: #Quitar si se quiere hallar para otros frentes
 		if (len(pos) != 1):
 			punto_ref_x = np.amax(pos, axis=0)[0]
 			punto_ref_y = np.amax(pos, axis=0)[1]
