@@ -1,5 +1,6 @@
 import random
 import numpy as np
+from operator import itemgetter
 from functools import reduce
 
 def buscar_puntos(pos):
@@ -44,9 +45,9 @@ def creacion_frentes(valores_f1, valores_f2):
                 frentes[0].append(p)
  	
  	# Resultado: Arreglos de puntos dominados por cada punto p
-    print("\nArreglos de puntos dominados por cada punto p\n:",S)
+    #print("\nArreglos de puntos dominados por cada punto p\n:",S)
     # Número de puntos que dominan a p
-    print("\nArreglo de número de putnos que dominas a p:\n",n)
+    #print("\nArreglo de número de putnos que dominas a p:\n",n)
     i = 0
     while(frentes[i] != []):
     	# Guarda los miembros del siguiente frentes
@@ -71,64 +72,44 @@ def creacion_frentes(valores_f1, valores_f2):
 
 # --------- MAIN  -------------
 
-#file = np.loadtxt("input.txt", dtype='str', delimiter=' ')
-#input = file.astype(np.float64)
-#print("\n---------Ejemplo Clase---------------\n")
-#print("Soluciones para f1:\n",input[0])
-#print("\nSoluciones para f2:\n",input[1])
-
-#frentes = creacion_frentes(input[0], input[1])
-#print("\n---------FRENTES---------------")
-#print(frentes_e1)
-
-#print("\n---------PUNTOS POR CADA FRENTE---------------")
-#puntos = list(map(imprimir_puntos_frente,frentes_e1))
-#for index, pos in enumerate(puntos):
-	#print("-- Frente ", index )
-	#print("Puntos:\n",pos)
-
-file = np.loadtxt("input1.txt", dtype='str', delimiter=' ')
+file = np.loadtxt("input.txt", dtype='str', delimiter=' ')  #<---- Cambiar input a archivo
 input = file.astype(np.float64)
-print("\n---------Ejemplo 1---------------\n")
+print("\n---------Ejemplo Clase---------------\n")
 print("Soluciones para f1:\n",input[0])
 print("\nSoluciones para f2:\n",input[1])
 
-frentes_e1 = creacion_frentes(input[0], input[1])
+frentes = creacion_frentes(input[0], input[1])
 print("\n---------FRENTES---------------")
-print(frentes_e1)
+print(frentes)
 
 print("\n---------PUNTOS POR CADA FRENTE---------------")
-puntos_1 = list(map(imprimir_puntos_frente,frentes_e1))
-for index, pos in enumerate(puntos_1):
+puntos = list(map(imprimir_puntos_frente,frentes))
+for index, pos in enumerate(puntos):
 	print("-- Frente ", index )
 	print("Puntos:\n",pos)
 
+print("\n---------HIPERVOLUMEN  ---------------\n")
+for index, pos in enumerate(puntos):
+	if index == 0: #Quitar si se quiere hallar para otros frentes
+		if (len(pos) != 1):
+			punto_ref_x = np.amax(pos, axis=0)[0]
+			punto_ref_y = np.amax(pos, axis=0)[1]
+			punto_referencia = [punto_ref_x, punto_ref_y]
+			print("punto de referencia 2:", punto_referencia)
+			ordenados_por_f1 = sorted(pos)
+			ordenados_por_f1.append(punto_referencia)
+			rectangulos =[]
+			i = 1
+			while i < len(ordenados_por_f1):
+				temp = [ordenados_por_f1[i][0] - ordenados_por_f1[i-1][0] , punto_ref_y - ordenados_por_f1[i-1][1]]
+				rectangulos.append(temp)
+				i = i+1
+			areas = list(map(calc_area,rectangulos))
+			hv = reduce((lambda a, b: a + b), areas)
+			print("Hipervolumen para ejemplo 2", hv)
 
-file = np.loadtxt("input2.txt", dtype='str', delimiter=' ')
-input = file.astype(np.float64)
-print("\n---------Ejemplo ---------------\n")
-print("Soluciones para f1:\n",input[0])
-print("\nSoluciones para f2:\n",input[1])
+		else:
+			punto_ref_x = pos[0][0]
+			punto_ref_y = pos[0][1]
+			punto_referencia = [punto_ref_x, punto_ref_y]
 
-frentes_e2 = creacion_frentes(input[0], input[1])
-print("\n---------FRENTES---------------")
-print(frentes_e2)
-
-print("\n---------PUNTOS POR CADA FRENTE---------------")
-puntos_2 = list(map(imprimir_puntos_frente,frentes_e2))
-for index, pos in enumerate(puntos_2):
-	print("-- Frente ", index )
-	print("Puntos:\n",pos)
-
-
-print("\n---------HIPERVOLUMEN EJEMPLO 1---------------\n")
-for index, pos in enumerate(puntos_1):
-	mult = list(map(calc_area,pos))
-	hv = reduce((lambda a, b: a + b), mult)
-	print("HV para frente "+str(index)+": "+str(hv))
-
-print("\n---------HIPERVOLUMEN EJEMPLO 2---------------\n")
-for index, pos in enumerate(puntos_2):
-	mult = list(map(calc_area,pos))
-	hv = reduce((lambda a, b: a + b), mult)
-	print("HV para frente "+str(index)+": "+str(hv))
