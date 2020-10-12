@@ -72,7 +72,7 @@ def creacion_frentes(valores_f1, valores_f2):
 
 # --------- MAIN  -------------
 
-file = np.loadtxt("input.txt", dtype='str', delimiter=' ')  #<---- Cambiar input a archivo
+file = np.loadtxt("input1.txt", dtype='str', delimiter=' ')  #<---- Cambiar input a archivo
 input = file.astype(np.float64)
 print("\n---------Ejemplo Clase---------------\n")
 print("Soluciones para f1:\n",input[0])
@@ -88,14 +88,15 @@ for index, pos in enumerate(puntos):
 	print("-- Frente ", index )
 	print("Puntos:\n",pos)
 
-print("\n---------HIPERVOLUMEN  ---------------\n")
+print("\n---------  HIPERVOLUMEN  ---------------\n")
 for index, pos in enumerate(puntos):
+	#	print("Frente: ", str(index))
 	if index == 0: #Quitar si se quiere hallar para otros frentes
 		if (len(pos) != 1):
 			punto_ref_x = np.amax(pos, axis=0)[0]
 			punto_ref_y = np.amax(pos, axis=0)[1]
-			punto_referencia = [punto_ref_x, punto_ref_y]
-			print("punto de referencia 2:", punto_referencia)
+			punto_referencia = [punto_ref_x, punto_ref_y]  #Nadir, peor para ambas funciones
+			print("punto de referencia:", punto_referencia)
 			ordenados_por_f1 = sorted(pos)
 			ordenados_por_f1.append(punto_referencia)
 			rectangulos =[]
@@ -106,7 +107,7 @@ for index, pos in enumerate(puntos):
 				i = i+1
 			areas = list(map(calc_area,rectangulos))
 			hv = reduce((lambda a, b: a + b), areas)
-			print("Hipervolumen para ejemplo 2", hv)
+			print("Hipervolumen: ", hv)
 
 		else:
 			punto_ref_x = pos[0][0]
