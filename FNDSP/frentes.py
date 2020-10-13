@@ -89,20 +89,20 @@ for index, pos in enumerate(puntos):
 	print("Puntos:\n",pos)
 
 print("\n---------  HIPERVOLUMEN  ---------------\n")
+punto_ref_f1 = np.max(input[0])
+punto_ref_f2 = np.max(input[1])
+punto_referencia = [punto_ref_f1, punto_ref_f2]
+print("punto de referencia 2:", punto_referencia)
 for index, pos in enumerate(puntos):
 	#	print("Frente: ", str(index))
 	if index == 0: #Quitar si se quiere hallar para otros frentes
 		if (len(pos) != 1):
-			punto_ref_x = np.amax(pos, axis=0)[0]
-			punto_ref_y = np.amax(pos, axis=0)[1]
-			punto_referencia = [punto_ref_x, punto_ref_y]  #Nadir, peor para ambas funciones
-			print("punto de referencia:", punto_referencia)
 			ordenados_por_f1 = sorted(pos)
 			ordenados_por_f1.append(punto_referencia)
 			rectangulos =[]
 			i = 1
 			while i < len(ordenados_por_f1):
-				temp = [ordenados_por_f1[i][0] - ordenados_por_f1[i-1][0] , punto_ref_y - ordenados_por_f1[i-1][1]]
+				temp = [ordenados_por_f1[i][0] - ordenados_por_f1[i-1][0] , punto_ref_f2 - ordenados_por_f1[i-1][1]]
 				rectangulos.append(temp)
 				i = i+1
 			areas = list(map(calc_area,rectangulos))

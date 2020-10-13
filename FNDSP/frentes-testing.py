@@ -91,21 +91,22 @@ for index, pos in enumerate(puntos_1):
 	print("Puntos:\n",pos)
 
 print("\n---------HIPERVOLUMEN EJEMPLO 1---------------\n")
+punto_ref_f1 = np.max(input[0])
+punto_ref_f2 = np.max(input[1])
+punto_referencia = [punto_ref_f1, punto_ref_f2]
+print("punto de referencia 1:", punto_referencia)
+
 for index, pos in enumerate(puntos_1):
 		#print("Frente: ", str(index))
 	if index == 0: #Quitar si se quiere hallar para otros frentes
 		if (len(pos) != 1):
-			punto_ref_x = np.amax(pos, axis=0)[0]
-			punto_ref_y = np.amax(pos, axis=0)[1]
-			punto_referencia = [punto_ref_x, punto_ref_y]
-			print("punto de referencia 1:", punto_referencia)
 			ordenados_por_f1 = sorted(pos)
 			ordenados_por_f1.append(punto_referencia)
 			#print(ordenados_por_f1)
 			rectangulos =[]
 			i = 1
 			while i < len(ordenados_por_f1):
-				temp = [ordenados_por_f1[i][0] - ordenados_por_f1[i-1][0] , punto_ref_y - ordenados_por_f1[i-1][1]]
+				temp = [ordenados_por_f1[i][0] - ordenados_por_f1[i-1][0] , punto_ref_f2 - ordenados_por_f1[i-1][1]]
 				rectangulos.append(temp)
 				i = i+1
 			areas = list(map(calc_area,rectangulos))
@@ -136,20 +137,21 @@ for index, pos in enumerate(puntos_2):
 	print("Puntos:\n",pos)
 
 print("\n---------HIPERVOLUMEN EJEMPLO 2---------------\n")
+punto_ref_f1 = np.max(input[0])
+punto_ref_f2 = np.max(input[1])
+punto_referencia = [punto_ref_f1, punto_ref_f2]
+print("punto de referencia 2:", punto_referencia)
+
 for index, pos in enumerate(puntos_2):
 	#	print("Frente: ", str(index))
 	if index == 0: #Quitar si se quiere hallar para otros frentes
 		if (len(pos) != 1):
-			punto_ref_x = np.amax(pos, axis=0)[0]
-			punto_ref_y = np.amax(pos, axis=0)[1]
-			punto_referencia = [punto_ref_x, punto_ref_y]
-			print("punto de referencia 2:", punto_referencia)
 			ordenados_por_f1 = sorted(pos)
 			ordenados_por_f1.append(punto_referencia)
 			rectangulos =[]
 			i = 1
 			while i < len(ordenados_por_f1):
-				temp = [ordenados_por_f1[i][0] - ordenados_por_f1[i-1][0] , punto_ref_y - ordenados_por_f1[i-1][1]]
+				temp = [ordenados_por_f1[i][0] - ordenados_por_f1[i-1][0] , punto_ref_f2 - ordenados_por_f1[i-1][1]]
 				rectangulos.append(temp)
 				i = i+1
 			areas = list(map(calc_area,rectangulos))
