@@ -92,7 +92,7 @@ print("\n---------  HIPERVOLUMEN  ---------------\n")
 punto_ref_f1 = np.max(input[0])
 punto_ref_f2 = np.max(input[1])
 punto_referencia = [punto_ref_f1, punto_ref_f2]
-print("punto de referencia 2:", punto_referencia)
+print("punto de referencia :", punto_referencia)
 for index, pos in enumerate(puntos):
 	#	print("Frente: ", str(index))
 	if index == 0: #Quitar si se quiere hallar para otros frentes
