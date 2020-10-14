@@ -72,8 +72,9 @@ def creacion_frentes(valores_f1, valores_f2):
 
 # --------- MAIN  -------------
 
-file = np.loadtxt("input1.txt", dtype='str', delimiter=' ')  #<---- Cambiar input a archivo
-input = file.astype(np.float64)
+file = np.loadtxt("input.txt", dtype='str', delimiter=' ')  #<---- Cambiar input a archivo
+input  = file.astype(np.float64)
+input[1] = -1 * input[1]
 print("\n---------Ejemplo Clase---------------\n")
 print("Soluciones para f1:\n",input[0])
 print("\nSoluciones para f2:\n",input[1])
@@ -81,6 +82,7 @@ print("\nSoluciones para f2:\n",input[1])
 frentes = creacion_frentes(input[0], input[1])
 print("\n---------FRENTES---------------")
 print(frentes)
+print("Número de frentes:",len(frentes))
 
 print("\n---------PUNTOS POR CADA FRENTE---------------")
 puntos = list(map(imprimir_puntos_frente,frentes))
@@ -89,8 +91,8 @@ for index, pos in enumerate(puntos):
 	print("Puntos:\n",pos)
 
 print("\n---------  HIPERVOLUMEN  ---------------\n")
-punto_ref_f1 = np.max(input[0])
-punto_ref_f2 = np.max(input[1])
+punto_ref_f1 = 28687 
+punto_ref_f2 = -269
 punto_referencia = [punto_ref_f1, punto_ref_f2]
 print("punto de referencia :", punto_referencia)
 for index, pos in enumerate(puntos):
