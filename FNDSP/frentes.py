@@ -91,8 +91,8 @@ for index, pos in enumerate(puntos):
 	print("Puntos:\n",pos)
 
 print("\n---------  HIPERVOLUMEN  ---------------\n")
-punto_ref_f1 = 28687 
-punto_ref_f2 = -269
+punto_ref_f1 = 21943 
+punto_ref_f2 = -357
 punto_referencia = [punto_ref_f1, punto_ref_f2]
 print("punto de referencia :", punto_referencia)
 for index, pos in enumerate(puntos):
