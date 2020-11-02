@@ -20,13 +20,8 @@ def evaluar_esfuerzo(D, d, r):
 	else:
 		diff = diferencias.index(min([i for i in diferencias if i > 0]))
 	B = factor_concentracion[diff][1]
-	print("B:", B)
 	a = factor_concentracion[diff][2]
-	print("a:",a)
-	print("r:", r)
-	print("r / d:", ((r / d) ** a))
 	kt = B * ((r / d) ** a)
-	print("kt:",kt)
 	d_en_m = d / 1000
 	esfuerzo = kt * ((4*150000)/ (np.pi * (d_en_m * d_en_m))) 
 	return esfuerzo
@@ -48,31 +43,33 @@ class Particula:
 			self.posicion[i] = random.uniform(self.limites_inf[i], self.limites_sup[i])
 
 	    # Control de D y d
-		if self.posicion[1] > self.posicion[0]:
-			self.posicion[1] = random.uniform(self.limites_inf[1], self.posicion[0])
+		while self.posicion[1] > self.posicion[0]:
+			self.posicion[0] = random.uniform(self.limites_inf[0], self.limites_sup[0])
+			self.posicion[1] = random.uniform(self.limites_inf[1], self.limites_sup[1])
 
 		self.velocidad = np.repeat(0, self.n_variables)
 
-		print("Nueva partícula creada")
-		print("----------------------")
-		print("Posición: " + str(self.posicion))
-		print("Límites inferiores de cada variable: " \
-                  + str(self.limites_inf))
-		print("Límites superiores de cada variable: " \
-                  + str(self.limites_sup))
-		print("Velocidad: " + str(self.velocidad))
-		print("")
-
-	def evaluar_particula(self, funcion_objetivo, optimizacion):
+	def evaluar_particula(self, funcion_objetivo, optimizacion, factor_penalizacion):
 		self.valor = funcion_objetivo(*self.posicion)
 		self.esfuerzo = evaluar_esfuerzo(*self.posicion)
 
-		# --- Penalizando funcion objetivo, valor * 20
+		# ----------- Penalizando funcion objetivo, valor * factor ------------ #
 
 		if (self.esfuerzo > 85000000):
-			print("Penalizando funcion objetivo:", self.valor)
-			self.valor =  self.valor * 300
-			print("nuevo valor:", self.valor)
+			#print("Penalizando funcion objetivo:", self.valor)
+			self.valor =  self.valor * factor_penalizacion
+			#print("nuevo valor:", self.valor)
+
+		# ------------------------------------------------------------------------# 
+
+		# --- Penalizando funcion objetivo cuando no se cumple que r <= (D -d) / 2 
+
+		condicion_r = np.abs((self.posicion[0] - self.posicion[1])) / 2
+			
+		if self.posicion[2] > condicion_r:
+			self.valor =  self.valor * factor_penalizacion
+
+		# ------------------------------------------------------------------------# 
 
 		if (self.mejor_valor) is None:
 				self.mejor_valor    = np.copy(self.valor)
@@ -87,13 +84,6 @@ class Particula:
 					self.mejor_valor    = np.copy(self.valor)
 					self.mejor_posicion = np.copy(self.posicion)
 
-		print("La partícula ha sido evaluada")
-		print("-----------------------------")
-		print("Valor actual: " + str(self.valor))
-		print("")
-
-
-	
 			
 	def mover_particula(self, mejor_p_enjambre, inercia, c1, c2):
 
@@ -107,7 +97,7 @@ class Particula:
 
 		self.posicion = self.posicion + self.velocidad
         
-        # comprobar límites y limitar espacio de búsqueda!
+        # -------- comprobar límites y limitar espacio de búsqueda -------- #
         
         # Para D, d y r
 		for i in np.arange(len(self.posicion)):
@@ -121,22 +111,11 @@ class Particula:
 				self.velocidad[i] = 0
 
 
-		condicion_r = np.abs((self.posicion[0] - self.posicion[1])) / 2
-		# r no puede ser mayor que (D - d / 2)		
-		if self.posicion[2] > condicion_r:
-			self.posicion[2] = condicion_r
-			self.velocidad[2] = 0
-       
-        # D / d debe ser mayor a 1.01. Garantizar que D sea mayor que d.
-		if self.posicion[1] > self.posicion[0]:
-			self.posicion[1] = random.uniform(self.limites_inf[1], self.posicion[0])
-			self.velocidad[1] = 0
-
-		print("La partícula se ha desplazado")
-		print("-----------------------------")
-		print("Nueva posición: " + str(self.posicion))
-		print("")
-
+		   
+        # Garantizar que D sea mayor que d.
+		while self.posicion[1] > self.posicion[0]:
+			self.posicion[0] = random.uniform(self.limites_inf[0], self.limites_sup[0])
+			self.posicion[1] = random.uniform(self.limites_inf[1], self.limites_sup[1])
 
 class Enjambre:
 	def __init__(self, n_particulas, n_variables, limites_inf = None,
@@ -156,6 +135,7 @@ class Enjambre:
 		self.valor_optimo = None
 		self.posicion_optima = None
 
+		# Creación de n partículas para crear enjambre
 		for i in np.arange(n_particulas):
 			particula_i = Particula(
 	                            n_variables = self.n_variables,
@@ -164,17 +144,10 @@ class Enjambre:
 	                          )
 			self.particulas.append(particula_i)
 
-		print("---------------")
-		print("Enjambre creado")
-		print("---------------")
-		print("Número de partículas: " + str(self.n_particulas))
-		print("Límites inferiores de cada variable: " + str(self.limites_inf))
-		print("Límites superiores de cada variable: " + str(self.limites_sup))
-		print("")
 
-	def evaluar_enjambre(self, funcion_objetivo, optimizacion):
+	def evaluar_enjambre(self, funcion_objetivo, optimizacion, factor_penalizacion):
 		for i in np.arange(self.n_particulas):
-			self.particulas[i].evaluar_particula(funcion_objetivo = funcion_objetivo, optimizacion = optimizacion)
+			self.particulas[i].evaluar_particula(funcion_objetivo = funcion_objetivo, optimizacion = optimizacion, factor_penalizacion = factor_penalizacion)
 
 		self.mejor_particula =  copy.deepcopy(self.particulas[0])
 
@@ -197,6 +170,8 @@ class Enjambre:
 		print("")
 
 	def mover_enjambre(self, inercia, c1, c2):
+
+		# Mover cada partícula del ejambre
 		for i in np.arange(self.n_particulas):
 			self.particulas[i].mover_particula(
                 mejor_p_enjambre = self.mejor_posicion,
@@ -205,21 +180,14 @@ class Enjambre:
                 c2               = c2
 			)
 
-		print("---------------------------------------------------------------------")
-		print("La posición de todas las partículas del enjambre ha sido actualizada.")
-		print("---------------------------------------------------------------------")
-		print("")
-
-	def optimizar(self, funcion_objetivo, optimizacion, n_iteraciones, inercia, c1, c2):
+	def optimizar(self, funcion_objetivo, optimizacion, n_iteraciones, inercia, c1, c2, factor_penalizacion):
 
 		for i in np.arange(n_iteraciones):
-			print("-------------")
-			print("Iteracion: " + str(i))
-			print("-------------")
-            
+    
 			self.evaluar_enjambre(
                 funcion_objetivo = funcion_objetivo,
                 optimizacion     = optimizacion,
+                factor_penalizacion = factor_penalizacion
                 )
 
             
@@ -246,12 +214,22 @@ class Enjambre:
 		print(self.posicion_optima)
 		esfuerzo_mejor_particula = evaluar_esfuerzo(*self.posicion_optima)
 
+		# Comprobando restricciones
+
+		des_1 = (self.posicion_optima[0] - self.posicion_optima[1]) / 2
+		diametros = self.posicion_optima[0] / self.posicion_optima[1]
+
 		print("\n#------FINAL------#")
 		print("Posición óptima: " + str(self.posicion_optima))
 		print("Valor óptimo: " + str(self.valor_optimo))
 		print("Esfuerzo: " + str(esfuerzo_mejor_particula))
-		print("Menor que 85000000", esfuerzo_mejor_particula < 85000000)
-
+		print("\n#-------------Control de restricciones---------#")
+		print("Menor que 85000000: ", esfuerzo_mejor_particula < 85000000)
+		print("Valor de D entre limites: ", (self.posicion_optima[0] >= 20 and self.posicion_optima[0] <= 100))
+		print("Valor de d entre limites: ", (self.posicion_optima[1] >= 10 and self.posicion_optima[1] <= 80))
+		print("Valor de r entre limites: ", (self.posicion_optima[2] >= 1 and self.posicion_optima[2] <= 15))
+		print("r menor que D - d / 2: ", self.posicion_optima[2] <= des_1)
+		print("D/d > 1.01: ", diametros >= 1.01)
 
 def funcion_objetivo(D, d, r):
     f = (np.pi / 4) * ((140 * (D*D)) + (200 * (d*d)))
@@ -272,4 +250,5 @@ enjambre.optimizar(
     inercia          = 0.8,
     c1				 = 1,
     c2     			 = 2,
+    factor_penalizacion = 20
 )
