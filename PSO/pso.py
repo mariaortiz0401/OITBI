@@ -71,7 +71,7 @@ class Particula:
 
 		if (self.esfuerzo > 85000000):
 			print("Penalizando funcion objetivo:", self.valor)
-			self.valor =  self.valor * 20
+			self.valor =  self.valor * 300
 			print("nuevo valor:", self.valor)
 
 		if (self.mejor_valor) is None:
@@ -254,7 +254,7 @@ class Enjambre:
 
 
 def funcion_objetivo(D, d, r):
-    f = (np.pi / 4) * ((0.2 * (D*D)) + (0.14 * (d*d)))
+    f = (np.pi / 4) * ((140 * (D*D)) + (200 * (d*d)))
     return(f)
 
 
