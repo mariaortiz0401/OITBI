@@ -12,17 +12,21 @@ from datetime import datetime
 
 def evaluar_esfuerzo(D, d, r):
 	factor_concentracion = [[2, 1.015, -0.3000], [1.5, 1, -0.282], [1.20, 0.963, -0.255], [1.05, 1.005, -0.171],[1.01, 0.984, -0.105]]
-	diferencias = np.empty(len(factor_concentracion))
+	diferencias = []
+	diametros = D / d
 	for i in range(len(factor_concentracion)):
-		np.append(diferencias,np.abs(factor_concentracion[i][0] - (D / d)))
-	print(D, d, r)
-	diff = diferencias.argmin()
+		diferencias.append(factor_concentracion[i][0] - (diametros))
+	if diametros >= 2:
+		diff = 0
+	else:
+		diff = diferencias.index(min([i for i in diferencias if i > 0]))
 	B = factor_concentracion[diff][1]
 	print("B:", B)
 	a = factor_concentracion[diff][2]
 	print("a:",a)
 	print("r:", r)
-	kt = B * (r / d) ** a
+	print("r / d:", ((r / d) ** a))
+	kt = B * ((r / d) ** a)
 	print("kt:",kt)
 	esfuerzo = kt * ((4*1500000)/ (np.pi * (d * d))) 
 	return esfuerzo
@@ -60,12 +64,21 @@ class Particula:
 		self.esfuerzo = evaluar_esfuerzo(*self.posicion)
 		
 		if (self.mejor_valor) is None:
-			self.mejor_valor    = np.copy(self.valor)
-			self.mejor_posicion = np.copy(self.posicion)
+			print("NONE POS:",self.posicion)
+			print("NONE:",self.esfuerzo)
+			if self.esfuerzo < 85000000:
+				print("Buen esfuerzo")
+				self.mejor_valor    = np.copy(self.valor)
+				self.mejor_posicion = np.copy(self.posicion)
+			else:
+				print("Nuevos valores por esfuerzo muy grande")
+				self.mejor_valor    = np.copy(self.valor)
+				self.mejor_posicion = [np.random.uniform(0.02, 0.1), np.random.uniform(0.01, 0.08), np.random.uniform(0.001, 0.015)]
 		else:
 			if optimizacion == "minimizar":
+				print("minimizando")
 				if (self.valor < self.mejor_valor) and (self.esfuerzo < 85000000) :
-					print("Esfuerzo calculado!!!!!: ",esfuerzo)
+					print("Alguna vez fue menor?")
 					self.mejor_valor    = np.copy(self.valor)
 					self.mejor_posicion = np.copy(self.posicion)
 			else:
@@ -73,7 +86,7 @@ class Particula:
 					self.mejor_valor    = np.copy(self.valor)
 					self.mejor_posicion = np.copy(self.posicion)
 
-		print("La partícula ha sido evaluada?????")
+		print("La partícula ha sido evaluada")
 		print("-----------------------------")
 		print("Valor actual: " + str(self.valor))
 		print("")
@@ -107,7 +120,6 @@ class Particula:
 				self.velocidad[i] = 0
 
 		condicion_r = np.abs((self.posicion[0] - self.posicion[1])) / 2
-		print(condicion_r)
 		# r no puede ser mayor que (D - d / 2)
 		if self.posicion[2] > condicion_r:
 			self.posicion[2] = condicion_r
@@ -253,7 +265,6 @@ class Enjambre:
 			self.historico_particulas.append(copy.deepcopy(self.particulas))
 			self.historico_mejor_posicion.append(copy.deepcopy(self.mejor_posicion))
 			self.historico_mejor_valor.append(copy.deepcopy(self.mejor_valor))
-
             # SE CALCULA LA DIFERENCIA ABSOLUTA RESPECTO A LA ITERACIÓN ANTERIOR
             # ------------------------------------------------------------------
             # La diferencia solo puede calcularse a partir de la segunda
@@ -310,7 +321,9 @@ class Enjambre:
 
 		self.valor_optimo    = self.historico_mejor_valor[indice_valor_optimo]
 		self.posicion_optima = self.historico_mejor_posicion[indice_valor_optimo]
-          
+		print(self.posicion_optima)
+		esfuerzo_mejor_particula = evaluar_esfuerzo(*self.posicion_optima)
+
 		print("-------------------------------------------")
 		print("Optimización finalizada " \
               + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
@@ -319,7 +332,8 @@ class Enjambre:
 		print("Número de iteraciones: " + str(self.iter_optimizacion))
 		print("Posición óptima: " + str(self.posicion_optima))
 		print("Valor óptimo: " + str(self.valor_optimo))
-		print("")
+		print("Esfuerzo: " + str(esfuerzo_mejor_particula))
+		print("Menor que 85000000", esfuerzo_mejor_particula < 85000000)
 
 
 def funcion_objetivo(D, d, r):
@@ -328,7 +342,7 @@ def funcion_objetivo(D, d, r):
 
 
 enjambre = Enjambre(
-               n_particulas = 50,
+               n_particulas = 100,
                n_variables  = 3,
                limites_inf  = [0.02, 0.01,0.001], #[D, d, r]
                limites_sup  = [0.1, 0.08,0.015]
@@ -337,14 +351,14 @@ enjambre = Enjambre(
 enjambre.optimizar(
     funcion_objetivo = funcion_objetivo,
     optimizacion     = "minimizar",
-    n_iteraciones    = 250,
+    n_iteraciones    = 450,
     inercia          = 0.8,
     reduc_inercia    = True,
     inercia_max      = 0.9,
     inercia_min      = 0.4,
     peso_cognitivo   = 1,
     peso_social      = 2,
-    parada_temprana  = True,
+    parada_temprana  = False,
     rondas_parada    = 5,
     tolerancia_parada = 10**-3
 )
