@@ -246,9 +246,9 @@ enjambre = Enjambre(
 enjambre.optimizar(
     funcion_objetivo = funcion_objetivo,
     optimizacion     = "minimizar",
-    n_iteraciones    = 6,
+    n_iteraciones    = 60,
     inercia          = 0.8,
     c1				 = 1,
     c2     			 = 2,
-    factor_penalizacion = 20
+    factor_penalizacion = 50
 )
