@@ -57,7 +57,7 @@ class Particula:
 
 		if (self.esfuerzo > 85000000):
 			#print("Penalizando funcion objetivo:", self.valor)
-			self.valor =  self.valor * factor_penalizacion
+			self.valor =  self.valor + (factor_penalizacion * (self.esfuerzo - 85000000))
 			#print("nuevo valor:", self.valor)
 
 		# ------------------------------------------------------------------------# 
@@ -250,5 +250,5 @@ enjambre.optimizar(
     inercia          = 0.8,
     c1				 = 1,
     c2     			 = 2,
-    factor_penalizacion = 50
+    factor_penalizacion = 60
 )
