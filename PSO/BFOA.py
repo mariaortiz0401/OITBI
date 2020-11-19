@@ -24,7 +24,7 @@ def evaluar_esfuerzo(D, d, r):
 
 class BFOA():
 
-  def __init__(self, pop_size, problem_size, search_space, elim_disp_steps, repro_steps, chem_steps, , swim_l, factor_penalizacion):
+  def __init__(self, pop_size, problem_size, search_space, elim_disp_steps, repro_steps, chem_steps, swim_l, factor_penalizacion):
     self.step_index = 0
     
     # problem configuration
@@ -246,7 +246,7 @@ bfoa = BFOA(pop_size = 150,
            search_space = [[20,100],[10,80],[1,15]], 
            elim_disp_steps = 10, 
            repro_steps = 10, 
-           chem_steps = 30,
+           chem_steps = 5,
            swim_l = 3,
            factor_penalizacion = 30)
 best = bfoa.search() 

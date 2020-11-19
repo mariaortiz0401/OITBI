@@ -237,7 +237,7 @@ def funcion_objetivo(D, d, r):
 
 
 enjambre = Enjambre(
-               n_particulas = 150,
+               n_particulas = 100,
                n_variables  = 3,
                limites_inf  = [20, 10,1], #[D, d, r]
                limites_sup  = [100, 80,15]
@@ -246,7 +246,7 @@ enjambre = Enjambre(
 enjambre.optimizar(
     funcion_objetivo = funcion_objetivo,
     optimizacion     = "minimizar",
-    n_iteraciones    = 60,
+    n_iteraciones    = 100,
     inercia          = 0.8,
     c1				 = 1,
     c2     			 = 2,
