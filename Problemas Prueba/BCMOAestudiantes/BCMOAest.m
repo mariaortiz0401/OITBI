@@ -23,8 +23,15 @@ contador=1;
 P=[];
 P(:,:)=zeros(p,S);
 J=zeros(M,S);
-P(:,:)=-1000+(2000*rand(p,S));                                             
-display(P)                                                                 %% Inicio aleatório de las variabless
+
+limitx1inf = 0
+limitx1sup = 1
+limitx2inf = 0
+limitx2sup = 5
+x1 = (limitx1sup-limitx1inf).*rand(1,S) + limitx1inf;
+x2 = (limitx2sup-limitx2inf).*rand(1,S) + limitx2inf;
+P(1,:)=x1;   
+P(2,:)=x2                                                                  %% Inicio aleatório de las variabless
 P(p+1,:)=[1:1:S];                                                          %% subíndice
 P1(:,:)=zeros(p+1,S);
 TamFP1=0;
@@ -141,15 +148,28 @@ for ii=1:S-TamFP1
      P1(p+1,Prest(p+1,ii))=Prest(p+1,ii);                                   %%% asignación de los subindices de cada bacteria luego del movimiento
 end
 
+ %%pared absorvente x1
+ 
  for i=1:S
-    for zz=1:p
-        if P1(zz,i)<-1000 ;
-        P1(zz,i)=-1000;
-        elseif  P1(zz,i)>1000 ;         %%pared absorvente
-        P1(zz,i)=1000;
+        if P1(1,i)< 0 ;
+        P1(1,i)= 0 ;
+        elseif  P1(1,i)> 1 ;        
+        P1(1,i)=1;
         end
-    end
-end
+   
+ end
+
+ %%pared absorvente x2
+ 
+ for i=1:S
+        if P1(2,i)< 0 ;
+        P1(2,i)= 0 ;
+        elseif  P1(2,i)> 5 ;        
+        P1(2,i)=1;
+        end
+   
+ end
+  
 
 Pant(:,:)=P(:,:);
 FPant{1}=[];
@@ -176,15 +196,21 @@ for i=1:S
     Jultimo0(2,i)=obj2SCH(P1(1:p,i));
 end
 
-FAA=linspace(0,2,500);
+FAA=linspace(0,1,500);
+FAA2=linspace(0,5,500);
 
-for i=1:500
-    FA(i)=obj1SCH(FAA(:,i));
-    FB(i)=obj2SCH(FAA(:,i));
-end
-plot(FA,FB,'k-')
-xlabel('Objective1');
-ylabel('Objective2');
-title('SHC - NONDOMINATED SOLUTIONS - BCMOA');
-hold on
+%for i=1:500
+   % p = [FAA(:,i), FAA2(:,i)];
+   % FA(i)=obj1SCH(p);
+   % FB(i)=obj2SCH(p);
+%end
+
+%plot(FA,FB,'k-')
+%xlabel('Objective1');
+%ylabel('Objective2');
+%title('SHC - NONDOMINATED SOLUTIONS - BCMOA');
+%hold on
 plot(Jultimo0(1,:),Jultimo0(2,:),'m.');
+
+
+
