@@ -36,20 +36,22 @@
 clear all
 clc
  [ParGen, ObjVals, Ranking, SumOfViols, NmbOfFront] = ...
-   NSGA_II( 200, 200, 'ZDT2', [0 1; 0 1], ...
+   NSGA_II( 100, 100, 'ZDT2', [0 1; 0 1], ...
    repmat( [0 0 1; 0 0 1], 1, 1), repmat( [0 1; 0 1], 1, 1), ...
    1, 1, .1, 1, .1);
 figure(1)
 clf
 plot( ObjVals( 1, :), ObjVals( 2, :),'k.');
-hold on
-Indivs(1,:)=linspace(0,2,500);
-[f1, f2] = zdt2(Indivs(:,1));
-ObjValsop( 1, :) = f1;
-ObjValsop( 2, :) = f2; 
-% ObjValsop( 1, :) = Indivs(1, :).^2;
-% ObjValsop( 2, :) = (Indivs(1, :) - 2).^2;
-plot( ObjValsop( 1, :), ObjValsop( 2, :),'m-');
 
-
+%hold on
+%Indivs(1,:)=linspace(1,0,500);
+%Indivs(2,:)=linspace(1,0,500);
+%ObjValsop=[];
+%ObjValsop(:,:)=zeros(2,500);
+%for i=1:500
+ %   [f1t, f2t] = zdt2(Indivs(:,i));
+  %  ObjValsop(1, i) = f1t;
+   % ObjValsop(2, i) = f2t;
+%end
+%plot( ObjValsop( 1, :), ObjValsop( 2, :),'m-');
 

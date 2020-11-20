@@ -56,9 +56,11 @@ function ObjVals = NSGA_Evaluate( Indivs, Cons, Fct)
 ObjVals = zeros( 2, nmbOfIndivs);
 switch Fct
     case 'ZDT2'
-        [f1, f2] = zdt2(Indivs(:,1));
-        ObjVals( 1, :) = f1;
-        ObjVals( 2, :) = f2; 
+        for i=1:nmbOfIndivs
+            [f1t, f2t] = zdt2(Indivs(:,i));
+            ObjVals(1, i) = f1t;
+            ObjVals(2, i) = f2t;
+        end
     case 'SCH'
       % Schaffer's function for x in [-1000 1000]
         ObjVals( 1, :) = Indivs(1, :).^2;
