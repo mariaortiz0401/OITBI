@@ -165,7 +165,7 @@ end
         if P1(2,i)< 0 ;
         P1(2,i)= 0 ;
         elseif  P1(2,i)> 5 ;        
-        P1(2,i)=1;
+        P1(2,i)=5;
         end
    
  end
