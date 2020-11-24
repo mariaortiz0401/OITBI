@@ -186,7 +186,7 @@ end   %%%%finalización de contador
 % %  %%%%%                      FIGURAS
 % % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %===============================================================
- figure(1)
+figure(1)
 % %%%========================================================================
 clf
 
@@ -205,12 +205,13 @@ FAA2=linspace(0,9,500);
     %FB(i)=obj2SCH(p);
 %end
 
-%plot(FA,FB,'k-')
+%plot(FAA,FAA2,'-o')
 xlabel('Objective1');
 ylabel('Objective2');
 title('CONSTR - NONDOMINATED SOLUTIONS - BCMOA');
 hold on
 plot(Jultimo0(1,:),Jultimo0(2,:),'m.');
+axis([0 1 0 9])
 
 
 

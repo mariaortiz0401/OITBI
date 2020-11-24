@@ -33,10 +33,11 @@
 %=========================================================================
 %%                            SCH
 %=========================================================================
+
 clear all
 clc
  [ParGen, ObjVals, Ranking, SumOfViols, NmbOfFront] = ...
-   NSGA_II( 100, 100, 'ZDT2', [0 1; 0 1], ...
+   NSGA_II(100, 100, 'ZDT2', [0 1; 0 1], ...
    repmat( [0 0 1; 0 0 1], 1, 1), repmat( [0 1; 0 1], 1, 1), ...
    1, 1, .1, 1, .1);
 figure(1)
@@ -54,4 +55,24 @@ plot( ObjVals( 1, :), ObjVals( 2, :),'k.');
    % ObjValsop(2, i) = f2t;
 %end
 %plot( ObjValsop( 1, :), ObjValsop( 2, :),'m-');
+
+%Frente óptimo
+numInd = 100
+x1=linspace(0,1,numInd);
+x2 = 1 - x1(1, :).^2;
+metrica(:,:)=zeros(3,2);
+
+% Métrica Y
+%for i=1:10
+  % [ParGen, ObjVals, Ranking, SumOfViols, NmbOfFront] = ...
+  % NSGA_II( numInd, 100, 'ZDT2', [0 1; 0 1], ...
+  % repmat( [0 0 1; 0 0 1], 1, 1), repmat( [0 1; 0 1], 1, 1), ...
+  % 1, 1, .1, 1, .1);
+   
+  % metrica(i,1)=i;
+  % [media, varianza] = MetricaY(numInd, x1, x2, ObjVals);
+  % metrica(i,2)=media;
+  % metrica(i,3)=varianza;
+%end
+
 

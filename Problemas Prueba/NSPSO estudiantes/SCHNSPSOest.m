@@ -157,9 +157,10 @@ for i=1:N
 end
 
 plot(Jult(1,:),Jult(2,:),'k.')
-hold on
-FAA=linspace(0,18,500);
-FAA2=linspace(0,30,500);
+axis([0 18 0 30])
+%hold on
+%FAA=linspace(0,18,500);
+%FAA2=linspace(0,30,500);
 
 %for i=1:500
  %   p = [FAA(1,i), FAA2(1,i)]
@@ -167,4 +168,4 @@ FAA2=linspace(0,30,500);
    % FB(i)=obj2SCH(p);
 %end
 
-plot(FAA,FAA2,'m-')
+%plot(FAA,FAA2,'m-')
