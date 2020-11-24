@@ -37,7 +37,7 @@
 clear all
 clc
  [ParGen, ObjVals, Ranking, SumOfViols, NmbOfFront] = ...
-   NSGA_II(100, 100, 'ZDT2', [0 1; 0 1], ...
+   NSGA_II(500, 100, 'ZDT2', [0 1; 0 1], ...
    repmat( [0 0 1; 0 0 1], 1, 1), repmat( [0 1; 0 1], 1, 1), ...
    1, 1, .1, 1, .1);
 figure(1)
@@ -57,22 +57,28 @@ plot( ObjVals( 1, :), ObjVals( 2, :),'k.');
 %plot( ObjValsop( 1, :), ObjValsop( 2, :),'m-');
 
 %Frente óptimo
-numInd = 100
+numInd = 500
 x1=linspace(0,1,numInd);
 x2 = 1 - x1(1, :).^2;
-metrica(:,:)=zeros(3,2);
+metricaY(:,:)=zeros(10,2);
+metricaDelta(:,:)=zeros(10,2);
 
-% Métrica Y
-%for i=1:10
-  % [ParGen, ObjVals, Ranking, SumOfViols, NmbOfFront] = ...
-  % NSGA_II( numInd, 100, 'ZDT2', [0 1; 0 1], ...
-  % repmat( [0 0 1; 0 0 1], 1, 1), repmat( [0 1; 0 1], 1, 1), ...
-  % 1, 1, .1, 1, .1);
+% Métricas
+for i=1:10
+   [ParGen, ObjVals, Ranking, SumOfViols, NmbOfFront] = ...
+   NSGA_II( numInd, 100, 'ZDT2', [0 1; 0 1], ...
+   repmat( [0 0 1; 0 0 1], 1, 1), repmat( [0 1; 0 1], 1, 1), ...
+   1, 1, .1, 1, .1);
    
-  % metrica(i,1)=i;
-  % [media, varianza] = MetricaY(numInd, x1, x2, ObjVals);
-  % metrica(i,2)=media;
-  % metrica(i,3)=varianza;
-%end
+   metricaY(i,1)=i;
+   [media,] = MetricaY(numInd, x1, x2, ObjVals);
+   metricaY(i,2)=media;
+   
+   metricaDelta(i,1)=i;
+   [delta] = MetricaDelta(numInd, x1, x2, ObjVals);
+   metricaDelta(i,2)=delta;
+   
+   
+end
 
 
