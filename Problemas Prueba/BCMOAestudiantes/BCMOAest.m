@@ -197,19 +197,19 @@ for i=1:S
 end
 
 FAA=linspace(0,1,500);
-FAA2=linspace(0,5,500);
+FAA2=linspace(0,9,500);
 
 %for i=1:500
-   % p = [FAA(:,i), FAA2(:,i)];
-   % FA(i)=obj1SCH(p);
-   % FB(i)=obj2SCH(p);
+    %p = [FAA(:,i), FAA2(:,i)];
+    %FA(i)=obj1SCH(p);
+    %FB(i)=obj2SCH(p);
 %end
 
 %plot(FA,FB,'k-')
-%xlabel('Objective1');
-%ylabel('Objective2');
-%title('SHC - NONDOMINATED SOLUTIONS - BCMOA');
-%hold on
+xlabel('Objective1');
+ylabel('Objective2');
+title('CONSTR - NONDOMINATED SOLUTIONS - BCMOA');
+hold on
 plot(Jultimo0(1,:),Jultimo0(2,:),'m.');
 
 
