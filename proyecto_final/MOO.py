@@ -18,7 +18,7 @@ def tiempo_total(pop):
     for i in range(pop_size):
         temp = 0
         for j in range(num_actividades):
-            temp = temp + pop[i][j]
+            temp = temp + pop[i][j][0]
         total_tiempo.append(temp)    
     return total_tiempo
 
@@ -37,7 +37,7 @@ def costo_total(pop):
     for i in range(pop_size):
         temp = 0
         for j in range(num_actividades):
-            temp = temp + pop[i][j]
+            temp = temp + pop[i][j][1]
         total_costo.append(temp)    
     return total_costo
 
@@ -171,7 +171,7 @@ def mutation(solution):
 
 
 pop_size = 100
-max_gen = 100
+max_gen = 00
 num_variables = 3
 num_actividades = 11
 solution = []

@@ -30,7 +30,7 @@ def costo_actividad(act, tiempo):
 
 def costo_total(pop):
     total_costo = []
-    for i in range(pop_size):
+    for i in range(len(pop)):
         temp = 0
         for j in range(num_actividades):
             c = costo_actividad(j, pop[i][j])
@@ -51,7 +51,7 @@ def calidad_actividad(act, tiempo):
 
 def calidad_total(pop):
     total_calidad = []
-    for i in range(pop_size):
+    for i in range(len(pop)):
         temp = 0
         for j in range(num_actividades):
             c = calidad_actividad(j, pop[i][j])
@@ -156,7 +156,7 @@ def mutation(solution):
 
 #Main program starts here
 pop_size = 100
-max_gen = 200
+max_gen = 100
 num_variables = 3
 num_actividades = 11
 solution = []
@@ -186,10 +186,6 @@ while(gen_no<max_gen):
     function2_values = costo_total(solution)
     function3_values = calidad_total(solution)
     non_dominated_sorted_solution = fast_non_dominated_sort(function2_values[:],function3_values[:])
-    print("The best front for Generation number ",gen_no, " is")
-    for valuez in non_dominated_sorted_solution[0]:
-        print(solution[valuez],end=" ")
-    print("\n")
     crowding_distance_values=[]
     for i in range(0,len(non_dominated_sorted_solution)):
         crowding_distance_values.append(crowding_distance(function2_values[:],function3_values[:],non_dominated_sorted_solution[i][:]))
@@ -223,8 +219,29 @@ while(gen_no<max_gen):
 
 #Lets plot the final front now
 function1 = [i for i in function2_values]
-function2 = [j * -1 for j in function3_values]
-plt.xlabel('Function 1', fontsize=15)
-plt.ylabel('Function 2', fontsize=15)
+function2 = [j for j in function3_values]
+
+# Frente pareto
+f2frente = []
+f3frente = []
+
+for valuez in non_dominated_sorted_solution[0]:
+        val = [solution[valuez]]
+        print(val)
+        f2 = costo_total(val)
+        f2frente.append(f2)
+        f3 =  calidad_total(val)
+        f3frente.append(f3)
+
+
+plt.xlabel('Costo', fontsize=15)
+plt.ylabel('Calidad', fontsize=15)
 plt.scatter(function1, function2)
+plt.scatter(f2frente, f3frente, color='green')
 plt.show() 
+
+#fig, (ax1, ax2) = plt.subplots(2)
+#fig.suptitle('Vertically stacked subplots')
+#ax1.scatter(function1, function2)
+#ax2.scatter(f2frente, f3frente, color='green')
+#plt.show()
