@@ -8,15 +8,17 @@ import math
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+from mpl_toolkits.mplot3d import Axes3D
 
-#First function to optimize
+
 
 def tiempo_total(pop):
     total_tiempo = []
     for i in range(pop_size):
         temp = 0
         for j in range(num_actividades):
-            temp = temp + pop[i][j][0]
+            temp = temp + pop[i][j]
         total_tiempo.append(temp)    
     return total_tiempo
 
@@ -25,8 +27,8 @@ def costo_actividad(act, tiempo):
     costo_normal = actividades[act][1][0] # Normal es menor, por eso está en 0
     tiempo_crash = actividades[act][0][0]
     tiempo_normal = actividades[act][0][1]
-    a = costo_crash - costo_normal / tiempo_crash ** 2 - (tiempo_normal ** 2) 
-    b = ((costo_normal * tiempo_crash ** 2 ) - (costo_crash * (tiempo_normal ** 2))) / (tiempo_crash ** 2 - (tiempo_normal**2)) 
+    a = costo_crash - costo_normal / (tiempo_crash ** 2 - (tiempo_normal ** 2))
+    b = ((costo_normal * (tiempo_crash ** 2) ) - (costo_crash * (tiempo_normal ** 2))) / (tiempo_crash ** 2 - (tiempo_normal**2)) 
     costo = a * (tiempo) + b
     return costo
 
@@ -35,7 +37,7 @@ def costo_total(pop):
     for i in range(pop_size):
         temp = 0
         for j in range(num_actividades):
-            temp = temp + pop[i][j][1]
+            temp = temp + pop[i][j]
         total_costo.append(temp)    
     return total_costo
 
@@ -44,9 +46,10 @@ def calidad_actividad(act, tiempo):
     tiempo_normal = actividades[act][0][1]
     calidad_crash = actividades[act][2][0]
     calidad_normal = actividades[act][2][1]
-    m = calidad_crash - calidad_normal / tiempo_crash ** 2 - (tiempo_normal**2) 
+    m = (calidad_crash - calidad_normal) / (tiempo_crash  - tiempo_normal) 
     n = ((calidad_normal * tiempo_crash) - (calidad_crash * (tiempo_normal))) / (tiempo_crash - (tiempo_normal)) 
-    calidad = m * (tiempo) + n
+    calidad = -1 * (m * (tiempo) + n)
+    
     return calidad
 
 def calidad_total(pop):
@@ -54,7 +57,7 @@ def calidad_total(pop):
     for i in range(pop_size):
         temp = 0
         for j in range(num_actividades):
-            temp = temp + (-1 * pop[i][j][2])
+            temp = temp + (1  * pop[i][j][2])
         temp = temp / num_actividades   
         total_calidad.append(temp)    
     return total_calidad
@@ -166,8 +169,8 @@ def mutation(solution):
             solution.append([tiempo, costo, calidad])
     return solution
 
-#Main program starts here
-pop_size = 40
+
+pop_size = 100
 max_gen = 100
 num_variables = 3
 num_actividades = 11
@@ -206,7 +209,7 @@ while(gen_no<max_gen):
         print((solution[valuez]),end=" ")
     crowding_distance_values=[]
     for i in range(0,len(non_dominated_sorted_solution)):
-        crowding_distance_values.append(crowding_distance(function1_values[:],function2_values[:],non_dominated_sorted_solution[i][:]))
+        crowding_distance_values.append(crowding_distance(function2_values[:],function3_values[:],non_dominated_sorted_solution[i][:]))
     solution2= solution[:]
     #Generating offsprings
     while(len(solution2)!=2*pop_size):
@@ -235,12 +238,20 @@ while(gen_no<max_gen):
     solution = [solution2[i] for i in new_solution]
     gen_no = gen_no + 1
 
-#Lets plot the final front now
-# restricciones para las actividades en orden de Tiempo, Costo y calidad
 
-function1 = [i for i in function2_values]
-function2 = [j for j in function3_values]
-plt.xlabel('Function 1', fontsize=15)
-plt.ylabel('Function 2', fontsize=15)
-plt.scatter(function2_values, function3_values)
+function1 = [h for h in function1_values]
+function2 = [i for i in function2_values]
+function3 = [j * -1 for j in function3_values]
+plt.xlabel('Costo', fontsize=15)
+plt.ylabel('Calidad', fontsize=15)
+plt.scatter(function2, function3)
 plt.show() 
+
+#mpl.rcParams['legend.fontsize'] = 10
+
+#fig = plt.figure()
+#ax = fig.gca(projection='3d')
+#ax.scatter(function3, function1, function2)
+#ax.legend()
+
+#plt.show()
