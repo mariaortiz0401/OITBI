@@ -11,7 +11,7 @@ import numpy as np
 
 def tiempo_total(pop):
     total_tiempo = []
-    for i in range(pop_size):
+    for i in range(len(pop)):
         temp = 0
         for j in range(num_actividades):
             temp = temp + pop[i][j]
@@ -23,9 +23,13 @@ def costo_actividad(act, tiempo):
     costo_normal = actividades[act][1][0] # Normal es menor, por eso está en 0
     tiempo_crash = actividades[act][0][0]
     tiempo_normal = actividades[act][0][1]
-    a = costo_crash - costo_normal / (tiempo_crash ** 2 - (tiempo_normal ** 2))
-    b = ((costo_normal * (tiempo_crash ** 2) ) - (costo_crash * (tiempo_normal ** 2))) / (tiempo_crash ** 2 - (tiempo_normal**2)) 
-    costo = a * (tiempo) + b
+    numA = costo_crash - costo_normal
+    denA= ((tiempo_crash ** 2) - (tiempo_normal ** 2))
+    a =  numA / denA
+    numB = ((costo_normal * (tiempo_crash ** 2)) - (costo_crash * (tiempo_normal ** 2)))
+    denB = (tiempo_crash ** 2 - (tiempo_normal**2)) 
+    b =  numB /denB
+    costo = a * (tiempo ** 2) + b
     return costo
 
 def costo_total(pop):
@@ -34,7 +38,7 @@ def costo_total(pop):
         temp = 0
         for j in range(num_actividades):
             c = costo_actividad(j, pop[i][j])
-            temp = temp + pop[i][j]
+            temp = temp + c
         total_costo.append(temp)    
     return total_costo
 
@@ -46,7 +50,6 @@ def calidad_actividad(act, tiempo):
     m = (calidad_crash - calidad_normal) / (tiempo_crash  - tiempo_normal) 
     n = ((calidad_normal * tiempo_crash) - (calidad_crash * (tiempo_normal))) / (tiempo_crash - (tiempo_normal)) 
     calidad = -1 * (m * (tiempo) + n)
-    
     return calidad
 
 def calidad_total(pop):
@@ -127,25 +130,29 @@ def crowding_distance(values1, values2, front):
     return distance
 
 #Function to carry out the crossover
-def crossover(a,b):
+
+def cruzamiento(padre_1, padre_2):
+    
+    punto_cruce = random.randint(1,num_actividades-1)
     r=random.random()
-    if r>0.5:
+    if r>p_crossover:
         temp_actividad = []
-        for i in range(num_actividades):
-            temp = (a[i] + b[i]) / 2
-            temp_actividad.append(temp)
+        for i in range(punto_cruce):
+            temp_actividad.append(padre_1[i])
+        for j in range(punto_cruce, num_actividades):
+            temp_actividad.append(padre_2[j])
         return mutation(temp_actividad)
     else:
         temp_actividad = []
         for i in range(num_actividades):
-            temp = (a[i] - b[i]) / 2
+            temp = np.random.uniform(low=actividades[i][0][0], high=actividades[i][0][1])
             temp_actividad.append(temp)
         return mutation(temp_actividad)
 
 #Function to carry out the mutation operator
 def mutation(solution):
     mutation_prob = random.random()
-    if mutation_prob <0.8:
+    if mutation_prob <p_mutation:
         solution = []
         for j in range(num_actividades):
             tiempo = np.random.uniform(low=actividades[j][0][0], high=actividades[j][0][1])
@@ -156,10 +163,13 @@ def mutation(solution):
 
 #Main program starts here
 pop_size = 100
-max_gen = 100
+max_gen = 200
 num_variables = 3
 num_actividades = 11
 solution = []
+p_crossover = 0.8
+p_mutation = 0.5
+
 # Limites de cada una de las actividades en orden Tiempo, Costo y calidad
 actividades = [[[30,60],[6432.20, 6752.10], [-0.9,-1]],
                [[300,450],[2842, 4197], [-0.7,-1]],
@@ -194,7 +204,7 @@ while(gen_no<max_gen):
     while(len(solution2)!=2*pop_size):
         a1 = random.randint(0,pop_size-1)
         b1 = random.randint(0,pop_size-1)
-        solution2.append(crossover(solution[a1],solution[b1]))
+        solution2.append(cruzamiento(solution[a1],solution[b1]))
     function1_values2 = tiempo_total(solution2)
     function2_values2 = costo_total(solution2)
     function3_values2 = calidad_total(solution2)
@@ -218,16 +228,24 @@ while(gen_no<max_gen):
     gen_no = gen_no + 1
 
 #Lets plot the final front now
-function1 = [i for i in function2_values]
-function2 = [j for j in function3_values]
+function1_values = tiempo_total(solution)
+function2_values = costo_total(solution)
+function3_values = calidad_total(solution)
+
+function1 = [h for h in function1_values]
+function2 = [i for i in function2_values]
+function3 = [j for j in function3_values]
 
 # Frente pareto
+f1frente = []
 f2frente = []
 f3frente = []
 
 for valuez in non_dominated_sorted_solution[0]:
         val = [solution[valuez]]
         print(val)
+        f1 = tiempo_total(val)
+        f1frente.append(f1)
         f2 = costo_total(val)
         f2frente.append(f2)
         f3 =  calidad_total(val)
@@ -236,12 +254,19 @@ for valuez in non_dominated_sorted_solution[0]:
 
 plt.xlabel('Costo', fontsize=15)
 plt.ylabel('Calidad', fontsize=15)
-plt.scatter(function1, function2)
-plt.scatter(f2frente, f3frente, color='green')
-plt.show() 
+plt.scatter(function2, function3)
 
-#fig, (ax1, ax2) = plt.subplots(2)
-#fig.suptitle('Vertically stacked subplots')
-#ax1.scatter(function1, function2)
-#ax2.scatter(f2frente, f3frente, color='green')
-#plt.show()
+#plt.xlabel('Costo', fontsize=15)
+#plt.ylabel('Calidad', fontsize=15)
+#plt.scatter(function2, function3)
+
+# ---- Gráfica 2d
+#fig = plt.figure()
+#ax = fig.add_subplot(111, projection='3d')
+#ax.scatter(function1, function2, function3)
+
+#ax.set_xlabel('Tiempo')
+#ax.set_ylabel('Costo')
+#ax.set_zlabel('Calidad')
+
+plt.show()
