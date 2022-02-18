@@ -168,7 +168,7 @@ num_variables = 3
 num_actividades = 11
 solution = []
 p_crossover = 0.8
-p_mutation = 0.5
+p_mutation = 0.2
 
 # Limites de cada una de las actividades en orden Tiempo, Costo y calidad
 actividades = [[[30,60],[6432.20, 6752.10], [-0.9,-1]],
